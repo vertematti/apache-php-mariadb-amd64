@@ -22,7 +22,7 @@ RUN a2dismod mpm_event
 RUN a2enmod mpm_prefork rewrite expires ssl headers
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
-        git \
+	git \
         zip \
         unzip \
         vim \
@@ -30,6 +30,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
         zlib1g-dev \
 	libzip-dev \
         libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
         libssl-dev \
         libicu-dev \
         libxml2-dev \
@@ -44,8 +46,20 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
         libfontconfig \
         libltdl-dev \
         gnupg \
-        redis-tools 
-        
+        redis-tools \ 
+    	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg
+
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    mysqli \
+    gd \
+    zip \
+    exif        
+
 RUN ln -s /usr/include /usr/local/incl
 
 RUN apt-get -y autoremove \
