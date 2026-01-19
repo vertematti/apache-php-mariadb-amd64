@@ -1,3 +1,5 @@
 .resources/mariadb/**
 !.resources/mariadb/.gitkeep
 src/**
+!src/sqlite
+!src/sqlite/**
